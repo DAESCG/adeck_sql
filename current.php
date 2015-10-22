@@ -19,7 +19,7 @@
       };
 //	Hopefully this way we're safe. 
         $sqlstr = $db->prepare('select distinct * from atl where fhr=0 AND tech ="CARQ" AND date <= :date AND date >= :date-12 ');
-        $sqlstr->bindValue(':date', $mdate);
+        $sqlstr->bindValue(':date', $mdate, SQLITE3_FLOAT);
         $results = $sqlstr->execute();
 //	$results = $db->query('select distinct * from atl where fhr=0 AND tech ="CARQ" AND date <='.$mdate.' AND date >='.$mdate.'-12');
 //	  ^^ liable to injection flaws ^^
