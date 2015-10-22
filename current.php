@@ -13,10 +13,16 @@
    if($db){
       if(isset($_POST["date"])){
 	$mdate = $_POST["date"];
+        settype($mdate, 'integer');  // simple check for nefarious types
 	}else{
       $mdate = $db->querySingle('select max(date) from atl');
       };
-	$results = $db->query('select distinct * from atl where fhr=0 AND tech ="CARQ" AND date <='.$mdate.' AND date >='.$mdate.'-12');
+//	Hopefully this way we're safe. 
+        $sqlstr = $db->prepare('select distinct * from atl where fhr=0 AND tech ="CARQ" AND date <= :date AND date >= :date-12 ');
+        $sqlstr->bindValue(':date', $mdate);
+        $results = $sqlstr->execute();
+//	$results = $db->query('select distinct * from atl where fhr=0 AND tech ="CARQ" AND date <='.$mdate.' AND date >='.$mdate.'-12');
+//	  ^^ liable to injection flaws ^^
 //'SELECT DISTINCT '.$var.' FROM atl WHERE date=');
       while ($row = $results->fetchArray()){
         $array[] = array(
